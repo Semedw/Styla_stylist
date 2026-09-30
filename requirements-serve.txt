@@ -1,7 +1,7 @@
 # Machine-learning dependencies the *running API* needs (used by Dockerfile).
 #
 # The root requirements.txt is the development set: it also carries wandb,
-# datasets, matplotlib, scikit-learn and albumentations, which only the
+# datasets, matplotlib and albumentations, which only the
 # training and demo scripts import (ml/*/train.py, ml/retrieval/demo.py).
 # Leaving them out keeps the deployed image far smaller and quicker to build.
 #
@@ -16,3 +16,6 @@ numpy>=1.26
 opencv-python-headless>=4.8.0
 scipy
 tqdm>=4.65.0
+# train.py `from sklearn.metrics import ...` cekir; serve-da lazy import
+# olsa da, elave guvenlik ucun (~15 MB).
+scikit-learn>=1.4
