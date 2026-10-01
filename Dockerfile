@@ -45,6 +45,18 @@ COPY --chown=user backend/ ./backend/
 COPY --chown=user ml/ ./ml/
 COPY --chown=user data/ ./data/
 
+# Runtime dirs must exist and belong to `user`: uploads, try-on and reference
+# matching create files under tmp/ and data/ on every request, and
+# /home/user/app itself is root-owned in the built image — without this layer
+# those mkdirs fail with PermissionError (Errno 13) at runtime.
+USER root
+RUN chown user:user $HOME/app \
+ && mkdir -p $HOME/app/tmp/upload $HOME/app/tmp/refs $HOME/app/tmp/reference \
+            $HOME/app/data/images/garments $HOME/app/data/avatars \
+            $HOME/app/data/vton $HOME/app/data/reference \
+ && chown -R user:user $HOME/app/tmp $HOME/app/data
+USER user
+
 EXPOSE 7860
 HEALTHCHECK --interval=30s --timeout=10s --start-period=180s --retries=3 \
     CMD curl -fsS "http://localhost:${PORT:-7860}/health" || exit 1
