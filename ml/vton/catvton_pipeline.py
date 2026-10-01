@@ -390,7 +390,7 @@ class CatVTONPipeline:
             output_dir:    Directory where the final composited image is written.
 
         Returns:
-            Public URL of the final result image (via localhost:8000 static serve),
+            Public URL of the final result image (served from PUBLIC_BASE_URL),
             or a fallback URL on total failure.
         """
         # Dress the person the way you would in real life: the base layer
@@ -447,7 +447,7 @@ class CatVTONPipeline:
             if self.mode == "ai":
                 self._restore_face(avatar_path, final_out)
             
-            return f"http://localhost:8000/data/vton/{filename}"
+            return f"{os.getenv('PUBLIC_BASE_URL', 'http://localhost:8000').rstrip('/')}/data/vton/{filename}"
 
         # Nothing came back from the try-on service. Say so, rather than
         # inventing a result: the previous fallbacks pasted flat cut-outs over
